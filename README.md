@@ -52,7 +52,6 @@ The workflow integrates **geospatial analysis** and **machine learning** as foll
 ### 📁 Datasets Used:
 - 🪨 **Landslide Inventory:** Real-world data (Date, Lat, Lon, District, Trigger).  
 - 🗺️ **DEM Files:** Topography raster data for the Kinnaur region.  
-- 🌦️ **Rainfall Data:** Time-series rainfall information (`PERSIANN_20200311_20250730.csv`).  
 - 🧪 **Synthetic Data:** Generated to balance landslide/non-landslide samples.  
 
 ---
