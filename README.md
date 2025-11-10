@@ -1,4 +1,4 @@
-# 🌍 Landslide Susceptibility Score Prediction  using Machine Learning 
+# 🌍 Landslide Susceptibility Score & Mapping Prediction  using Machine Learning 
 
 🚀 **An intelligent geospatial workflow for predicting landslide-prone areas using XGBoost and QGIS-based feature engineering (LULC, DEM, slope, rainfall, etc.).**  
 📍 **Study Area:** Kinnaur Region, Himachal Pradesh, India  
