@@ -131,7 +131,7 @@ Follow these steps to set up the project locally or in Google Colab.
 - ☁️ Google Colab (recommended) or local Python environment  
 - 🧩 Required Python libraries (see `requirements.txt`)  
 - 🗺️ DEM `.tif` files for the study region  
-- 🌧️ Rainfall data CSV (`PERSIANN_20200311_20250730.csv`)  
+- 🌧️CSV FILES FOR ALL PARAMETERS  
 
 ---
 
@@ -139,6 +139,6 @@ Follow these steps to set up the project locally or in Google Colab.
 
 Clone the repository:
 ```bash
-git clone https://github.com/abhijit826/landslide_susceptibility-using-ML-and-QGIS-LULC-Mapping.git
-cd landslide_susceptibility-using-ML-and-QGIS-LULC-Mapping
+git clone https://github.com/abhijit826/LANDSLIDE-USING-XG-BOOST-AND-RANDOM-FOREST-CLASSIFIER.git
+cd LANDSLIDE-USING-XG-BOOST-AND-RANDOM-FOREST-CLASSIFIER
 pip install -r requirements.txt
