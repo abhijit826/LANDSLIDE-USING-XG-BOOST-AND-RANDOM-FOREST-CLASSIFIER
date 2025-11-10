@@ -55,8 +55,6 @@ The workflow integrates **geospatial analysis** and **machine learning** as foll
 - 🌦️ **Rainfall Data:** Time-series rainfall information (`PERSIANN_20200311_20250730.csv`).  
 - 🧪 **Synthetic Data:** Generated to balance landslide/non-landslide samples.  
 
-> 📝 Note: DEM and CSV data are loaded from local or Colab paths. Replace with your region-specific files as needed.
-
 ---
 
 ## 🤖 Model Training and Evaluation  
