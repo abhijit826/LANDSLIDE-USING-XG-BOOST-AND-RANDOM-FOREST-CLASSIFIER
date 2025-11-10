@@ -127,9 +127,6 @@ Follow these steps to set up the project locally or in Google Colab.
 - 🐍 Python 3.7+  
 - ☁️ Google Colab (recommended) or local Python environment  
 - 🧩 Required Python libraries (see `requirements.txt`)  
-- 🗺️ DEM `.tif` files for the study region  
-- 🌧️CSV FILES FOR ALL PARAMETERS  
-
 ---
 
 ### 💻 Installation  
