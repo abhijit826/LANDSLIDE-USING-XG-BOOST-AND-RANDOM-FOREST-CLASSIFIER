@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landslide Prediction</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 70%),
+                radial-gradient(circle at 20% 20%, rgba(0, 123, 255, 0.05) 0%, transparent 50%);
+            background-blend-mode: overlay;
+        }
+
+        h1,
+        h2 {
+            color: #003087;
+            text-align: center;
+            border-bottom: 3px solid #e0e7ff;
+            padding-bottom: 0.75rem;
+            margin-top: 3.5rem;
+            font-weight: 600;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            border: 1px solid #e6e6e6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+            color: #444;
+        }
+
+        input {
+            padding: 0.8rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+            background-color: #f9fafb;
+        }
+
+        input[type="file"] {
+            padding: 0.6rem;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: #fff;
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .soil-type-group {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            border: 1px dashed #d1d5db;
+            border-radius: 6px;
+            background-color: #f9fafb;
+        }
+
+        .soil-type-group h3 {
+            margin-top: 0;
+            color: #003087;
+            font-size: 1.1rem;
+        }
+
+        button {
+            grid-column: 1 / -1;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            margin-top: 2.5rem;
+            padding: 1.75rem;
+            background: #f3f4f6;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.25rem;
+            display: none;
+            border: 1px solid #e5e7eb;
+        }
+
+        .result-box.error {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .result-box.success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .visualization-section {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+        }
+
+        #risk-gauge {
+            max-width: 300px;
+            width: 100%;
+            height: 200px;
+        }
+
+        #feature-chart {
+            max-width: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Landslide Prediction Model</h1>
+
+    <h2>Predict from Numerical Data</h2>
+    <form id="prediction-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="Slope_Angle">Slope Angle (°)</label>
+                <input type="number" id="Slope_Angle" name="Slope_Angle" step="any" min="0" max="90" required
+                    value="35.2">
+                <span class="error-message">Must be between 0 and 90.</span>
+            </div>
+            <div class="form-group">
+                <label for="Rainfall_mm">Rainfall (mm)</label>
+                <input type="number" id="Rainfall_mm" name="Rainfall_mm" step="any" min="0" max="1000" required
+                    value="120.5">
+                <span class="error-message">Must be between 0 and 1000.</span>
+            </div>
+            <div class="form-group">
+                <label for="Soil_Saturation">Soil Saturation (%)</label>
+                <input type="number" id="Soil_Saturation" name="Soil_Saturation" step="any" min="0" max="1" step="0.01"
+                    required value="0.75">
+                <span class="error-message">Must be between 0 and 1.</span>
+            </div>
+            <div class="form-group">
+                <label for="Vegetation_Cover">Vegetation Cover (%)</label>
+                <input type="number" id="Vegetation_Cover" name="Vegetation_Cover" step="any" min="0" max="1"
+                    step="0.01" required value="0.4">
+                <span class="error-message">Must be between 0 and 1.</span>
+            </div>
+            <div class="form-group">
+                <label for="Earthquake_Activity">Earthquake Activity (Richter)</label>
+                <input type="number" id="Earthquake_Activity" name="Earthquake_Activity" step="any" min="0" max="10"
+                    required value="1.2">
+                <span class="error-message">Must be between 0 and 10.</span>
+            </div>
+            <div class="form-group">
+                <label for="Proximity_to_Water">Proximity to Water (m)</label>
+                <input type="number" id="Proximity_to_Water" name="Proximity_to_Water" step="any" min="0" max="1000"
+                    required value="55.0">
+                <span class="error-message">Must be between 0 and 1000.</span>
+            </div>
+            <div class="soil-type-group form-group">
+                <h3>Soil Type (One-Hot Encoded)</h3>
+                <p>Enter 1 for the dominant soil type, 0 for others.</p>
+                <label for="Soil_Type_Gravel">Gravel</label>
+                <input type="number" id="Soil_Type_Gravel" name="Soil_Type_Gravel" min="0" max="1" required value="0">
+                <span class="error-message">Must be 0 or 1.</span>
+                <label for="Soil_Type_Sand">Sand</label>
+                <input type="number" id="Soil_Type_Sand" name="Soil_Type_Sand" min="0" max="1" required value="1">
+                <span class="error-message">Must be 0 or 1.</span>
+                <label for="Soil_Type_Silt">Silt</label>
+                <input type="number" id="Soil_Type_Silt" name="Soil_Type_Silt" min="0" max="1" required value="0">
+                <span class="error-message">Must be 0 or 1.</span>
+            </div>
+        </div>
+        <button type="submit" id="predict-button">Predict Landslide Risk</button>
+    </form>
+    <div id="numerical-result" class="result-box"></div>
+    <div class="visualization-section">
+        <canvas id="risk-gauge"></canvas>
+        <canvas id="feature-chart"></canvas>
+    </div>
+
+    <h2>Or, Predict from an Image</h2>
+    <form id="image-prediction-form">
+        <div class="form-group">
+            <label for="landslide_image">Upload an image of the area</label>
+            <input type="file" id="landslide_image" name="image" accept="image/jpeg, image/png" required>
+        </div>
+        <button type="submit">Analyze Image</button>
+    </form>
+    <div id="image-result" class="result-box"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Real-time form validation
+        const inputs = document.querySelectorAll('#prediction-form input');
+        const predictButton = document.getElementById('predict-button');
+
+        function validateForm() {
+            let isValid = true;
+            inputs.forEach(input => {
+                const errorMessage = input.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('error-message')) {
+                    if (!input.validity.valid) {
+                        errorMessage.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorMessage.style.display = 'none';
+                    }
+                }
+            });
+            // Validate one-hot encoding for soil types
+            const soilInputs = [
+                document.getElementById('Soil_Type_Gravel'),
+                document.getElementById('Soil_Type_Sand'),
+                document.getElementById('Soil_Type_Silt')
+            ];
+            const soilSum = soilInputs.reduce((sum, input) => sum + Number(input.value), 0);
+            if (soilSum !== 1) {
+                soilInputs.forEach(input => {
+                    const errorMessage = input.nextElementSibling;
+                    if (errorMessage && errorMessage.classList.contains('error-message')) {
+                        errorMessage.textContent = 'Exactly one soil type must be 1, others 0.';
+                        errorMessage.style.display = 'block';
+                    }
+                });
+                isValid = false;
+            }
+            predictButton.disabled = !isValid;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', validateForm);
+        });
+
+        // Risk gauge drawing
+        function drawGauge(probability) {
+            const canvas = document.getElementById('risk-gauge');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300;
+            canvas.height = 200;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height * 0.75;
+            const radius = 80;
+            const startAngle = Math.PI * 0.75;
+            const endAngle = Math.PI * 2.25;
+            const riskAngle = startAngle + (endAngle - startAngle) * probability;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background arc
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#e9ecef';
+            ctx.stroke();
+
+            // Risk arc
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, riskAngle);
+            ctx.strokeStyle = probability > 0.7 ? '#dc3545' : probability > 0.3 ? '#ffc107' : '#28a745';
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = '#333';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Risk: ${(probability * 100).toFixed(0)}%`, centerX, centerY + 30);
+        }
+
+        
+        // Feature importance chart
+        let featureChart = null;
+        function drawFeatureChart(features) {
+            const canvas = document.getElementById('feature-chart');
+            if (featureChart) featureChart.destroy();
+            featureChart = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(features),
+                    datasets: [{
+                        label: 'Feature Importance',
+                        data: Object.values(features),
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Importance' } },
+                        x: { title: { display: true, text: 'Features' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Feature Importance' }
+                    }
+                }
+            });
+        }
+
+        // Numerical form handler
+        document.getElementById('prediction-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const resultDiv = document.getElementById('numerical-result');
+            resultDiv.style.display = 'none';
+            resultDiv.className = 'result-box';
+
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = Number(value); });
+
+            try {
+                const response = await fetch('http://localhost:5000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server responded with status: ${response.status}`);
+                }
+                const result = await response.json();
+                const predictionText = result.prediction === 1 ? 'High Risk of Landslide' : 'Low Risk of Landslide';
+                const probabilityText = `(Probability of High Risk: ${(result.probability * 100).toFixed(2)}%)`;
+                resultDiv.textContent = `${predictionText} ${probabilityText}`;
+                resultDiv.classList.add('success');
+
+                // Draw visualizations
+                drawGauge(result.probability);
+                // Mock feature importance (replace with actual server response if available)
+                const featureImportance = {
+                    'Earthquake Activity': 0.38,
+                    'Vegetation Cover': 0.21,
+                    'Soil Saturation': 0.16,
+                    'Rainfall (mm)': 0.11,
+                    'Proximity to Water': 0.085,
+                    'Slope Angle': 0.065,
+                    'Soil Type - Silt': 0.018,
+                    'Soil Type - Gravel': 0.012,
+                    'Soil Type - Sand': 0.002
+                };
+                drawFeatureChart(featureImportance);
+
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}.`;
+                resultDiv.classList.add('error');
+                drawGauge(0); // Reset gauge on error
+            } finally {
+                resultDiv.style.display = 'block';
+            }
+        });
+
+        // Image form handler
+        document.getElementById('image-prediction-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const resultDiv = document.getElementById('image-result');
+            const imageInput = document.getElementById('landslide_image');
+            resultDiv.style.display = 'none';
+            resultDiv.className = 'result-box';
+
+            if (imageInput.files.length === 0) {
+                resultDiv.textContent = 'Please select an image file.';
+                resultDiv.classList.add('error');
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+
+            try {
+                const response = await fetch('http://localhost:5000/predict_image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server responded with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const predictionText = `Image Analysis Result: ${result.prediction}`;
+                const confidenceText = `(Confidence: ${(result.confidence * 100).toFixed(2)}%)`;
+                resultDiv.textContent = `${predictionText} ${confidenceText}`;
+                resultDiv.classList.add('success');
+                drawGauge(result.confidence);
+
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}.`;
+                resultDiv.classList.add('error');
+                drawGauge(0);
+            } finally {
+                resultDiv.style.display = 'block';
+            }
+        });
+
+        // Initial validation
+        validateForm();
+        drawGauge(0); // Initialize gauge
+    </script>
+</body>
+
+</html>
