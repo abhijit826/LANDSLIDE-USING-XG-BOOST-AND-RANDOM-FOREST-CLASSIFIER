@@ -1,94 +1,144 @@
-# Landslide Susceptibility Mapping
+# 🌍 Landslide Susceptibility Mapping using Machine Learning and QGIS for LULC Analysis  
 
-This project demonstrates a workflow for creating landslide susceptibility maps using machine learning, specifically the XGBoost algorithm, and geospatial data (Digital Elevation Models). The project focuses on the Kinnaur region and utilizes a combination of real landslide inventory data and synthetic data for model training and evaluation.
+🚀 **An intelligent geospatial workflow for predicting landslide-prone areas using XGBoost and QGIS-based feature engineering (LULC, DEM, slope, rainfall, etc.).**  
+📍 **Study Area:** Kinnaur Region, Himachal Pradesh, India  
 
-## Table of Contents
+---
 
-- [Project Overview](#project-overview)
-- [Methodology](#methodology)
-- [Data](#data)
-- [Model Training and Evaluation](#model-training-and-evaluation)
-- [Susceptibility Mapping](#susceptibility-mapping)
-- [Visualization and Analysis](#visualization-and-analysis)
-- [Getting Started](#getting-started)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+## 🧭 Table of Contents  
+- [📘 Project Overview](#-project-overview)  
+- [⚙️ Methodology](#️-methodology)  
+- [🗂️ Data](#️-data)  
+- [🤖 Model Training and Evaluation](#-model-training-and-evaluation)  
+- [🗺️ Susceptibility Mapping](#️-susceptibility-mapping)  
+- [📊 Visualization and Analysis](#-visualization-and-analysis)  
+- [🚀 Getting Started](#-getting-started)  
+- [🧰 Prerequisites](#-prerequisites)  
+- [💻 Installation](#-installation)  
+- [🪄 Usage](#-usage)  
+- [📁 File Structure](#-file-structure)  
+- [📜 License](#-license)  
+- [🙏 Acknowledgments](#-acknowledgments)  
 
-## Project Overview
+---
 
-The goal of this project is to develop a predictive model that can identify areas prone to landslides based on various environmental factors. The key steps involve:
-1.  **Data Collection and Preparation:** Gathering landslide inventory data and relevant environmental factors (DEM, rainfall, soil type, etc.).
-2.  **Feature Extraction:** Extracting relevant features from geospatial data, such as elevation and slope from DEMs.
-3.  **Dataset Creation:** Combining landslide data with features to create a labeled dataset for model training, including generating synthetic data to augment limited real data.
-4.  **Model Selection and Training:** Choosing and training a suitable machine learning model (XGBoost) for landslide prediction.
-5.  **Hyperparameter Tuning and Evaluation:** Optimizing model performance using techniques like GridSearchCV and K-Fold Cross-Validation.
-6.  **Susceptibility Mapping:** Applying the trained model to DEM data to generate landslide susceptibility maps.
-7.  **Visualization and Analysis:** Visualizing results, including feature importance and spatial susceptibility patterns.
+## 📘 Project Overview  
 
-## Methodology
+The goal of this project is to develop a **predictive geospatial model** that identifies areas prone to landslides based on multiple environmental and terrain-based parameters.  
 
-The project employs the following key techniques:
+### 🧩 Key Steps:
+1. 🗺️ **Data Collection & Preparation:** Landslide inventory + DEM, rainfall, soil, and vegetation data.  
+2. 🧮 **Feature Extraction:** Extracting elevation, slope, aspect, and NDVI from DEMs and remote sensing data.  
+3. 🧠 **Model Training:** Using **XGBoost Classifier** to predict landslide likelihood.  
+4. 🎯 **Evaluation:** Model performance optimized with **GridSearchCV** & **K-Fold Cross-Validation**.  
+5. 🌈 **Mapping:** Generating landslide susceptibility maps using pixel-wise model inference on DEMs.  
 
--   **Geospatial Data Processing:** Using `rasterio` to handle DEM files and extract topographical features (elevation, slope).
--   **Data Wrangling:** Utilizing `pandas` for data loading, cleaning, and manipulation.
--   **Synthetic Data Generation:** Creating synthetic data to address the limited size of the real landslide inventory and improve model robustness.
--   **Machine Learning (XGBoost):** Implementing an XGBoost classifier for binary prediction (landslide/no landslide).
--   **Model Evaluation:** Employing `scikit-learn` for splitting data, cross-validation (K-Fold), hyperparameter tuning (GridSearchCV), and performance reporting (classification report, confusion matrix, F1 score).
--   **Visualization:** Generating various plots (`matplotlib`, `seaborn`) including feature importance, correlation matrices, scatter plots, and susceptibility maps.
+---
 
-## Data
+## ⚙️ Methodology  
 
-The project uses:
+The workflow integrates **geospatial analysis** and **machine learning** as follows:  
 
--   **Consolidated Landslide Inventory:** A pandas DataFrame containing real landslide locations and attributes (Date, Latitude, Longitude, District, Trigger).
--   **Digital Elevation Models (DEMs):** GeoTIFF files (`.tif`) representing the topography of the study area (Kinnaur region).
--   **Synthetic Dataset:** A generated dataset to supplement the real data and improve model training.
--   **Rainfall Data:** Time series data (`.csv`) for rainfall information.
+- 🗻 **Geospatial Processing:** Using `rasterio` and `GDAL` for DEM handling and terrain metrics.  
+- 🧹 **Data Wrangling:** `pandas` and `numpy` for preprocessing, merging, and transformation.  
+- 🤖 **Machine Learning (XGBoost):** Binary classification for landslide/no-landslide detection.  
+- 🔍 **Model Evaluation:** Confusion matrix, precision, recall, F1-score, ROC curve.  
+- 🎨 **Visualization:** `matplotlib` and `seaborn` for plots and correlation heatmaps.  
 
-*(Note: The actual data files like DEMs and `PERSIANN_20200311_20250730.csv` are assumed to be uploaded to the Colab environment or specified paths.)*
+---
 
-## Model Training and Evaluation
+## 🗂️ Data  
 
-The project uses an XGBoost Classifier for landslide prediction.
+### 📁 Datasets Used:
+- 🪨 **Landslide Inventory:** Real-world data (Date, Lat, Lon, District, Trigger).  
+- 🗺️ **DEM Files:** Topography raster data for the Kinnaur region.  
+- 🌦️ **Rainfall Data:** Time-series rainfall information (`PERSIANN_20200311_20250730.csv`).  
+- 🧪 **Synthetic Data:** Generated to balance landslide/non-landslide samples.  
 
--   **Training Data:** A combined dataset of real landslide locations and synthetically generated non-landslide locations, along with extracted features (Elevation, Slope_Angle, Rainfall_mm, Soil_Saturation, Vegetation_Cover, Earthquake_Activity, Proximity_to_Water, Soil_Type_Gravel, Soil_Type_Sand, Soil_Type_Silt).
--   **Hyperparameter Tuning:** GridSearchCV is used to find the optimal hyperparameters for the XGBoost model, aiming to maximize the F1 score, which is suitable for imbalanced datasets.
--   **Cross-Validation:** K-Fold Cross-Validation is performed on the best model to provide a more robust estimate of its performance.
+> 📝 Note: DEM and CSV data are loaded from local or Colab paths. Replace with your region-specific files as needed.
 
-## Susceptibility Mapping
+---
 
-After training, the best model is applied to the DEM data to predict landslide susceptibility scores for each pixel.
+## 🤖 Model Training and Evaluation  
 
--   For each DEM file, Elevation and Slope are extracted.
--   Mean values from the training data are used for non-topographical features (Rainfall, Soil Saturation, etc.) as a simplified approach for pixel-wise prediction across the entire DEM.
--   The model predicts a probability (susceptibility score) for each pixel indicating the likelihood of a landslide.
--   Susceptibility maps are visualized using a color gradient from low (blue) to high (red) susceptibility.
+- 🧠 **Model:** `XGBoostClassifier`  
+- 📈 **Training Data:** Combination of real and synthetic landslide samples.  
+- ⚙️ **Features:**  
+  - Elevation  
+  - Slope Angle  
+  - Rainfall (mm)  
+  - Soil Saturation  
+  - Vegetation Cover (NDVI)  
+  - Earthquake Activity  
+  - Proximity to Water  
+  - Soil Type (Gravel, Sand, Silt)  
 
-## Visualization and Analysis
+- 🧩 **Tuning:**  
+  - `GridSearchCV` for hyperparameter tuning  
+  - `K-Fold Cross-Validation` for robustness  
 
-The project includes several visualizations to understand the data and the model's behavior:
+📊 **Evaluation Metrics:**  
+`Accuracy`, `Precision`, `Recall`, `F1-Score`, `ROC-AUC`, and `Confusion Matrix`
 
--   **Feature Importance:** A bar chart showing the relative importance of each feature in the XGBoost model's predictions.
--   **Correlation Heatmap:** A heatmap illustrating the correlations between different features and the landslide target variable.
--   **Scatter Plots, Box Plots, and Violin Plots:** Visualizations to explore the relationships and distributions of key features with respect to landslide occurrence.
--   **Susceptibility Maps:** Visual representations of the predicted landslide susceptibility across the DEMs.
-  ## LANDSLIDE PREDICTION USING PICKLE FILE IN LOCAL HOST
-<img width="1750" height="946" alt="Screenshot 2025-11-07 221250" src="https://github.com/user-attachments/assets/0dd4bab1-8fbc-40e3-be32-68d19d99c862" />
-<img width="1728" height="968" alt="Screenshot 2025-11-07 221415" src="https://github.com/user-attachments/assets/2d32a884-4f4b-4cc7-9282-d51bfc52085f" />
+---
 
-## Getting Started
+## 🗺️ Susceptibility Mapping  
 
-These instructions will get you a copy of the project up and running on your local machine or in a Colab environment for development and testing purposes.
+After model training, the best model is applied to the DEM raster to produce pixel-level susceptibility maps.  
 
-### Prerequisites
+### 🧮 Steps:
+1. Extract elevation and slope from DEM.  
+2. Use average values for non-topographic features.  
+3. Predict pixel-wise probability of landslide occurrence.  
+4. Visualize using a color gradient (🟦 Low → 🟥 High Susceptibility).  
 
--   Python 3.7+
--   Google Colab environment (recommended for ease of use with Colab notebooks and file uploads) or a local Python environment.
--   Required Python libraries (listed in `requirements.txt`).
--   DEM files (`.tif`) for the area you want to analyze.
--   Rainfall data file (`.csv`) - the notebook is configured to use `PERSIANN_20200311_20250730.csv`.
--   Optional: A generic landslide dataset file (`landslide_dataset.csv`) if you want to run the combined data cells.
+---
+
+## 📊 Visualization and Analysis  
+
+The project includes multiple visual components for better interpretation:  
+
+| Visualization | Description |
+|---------------|-------------|
+| 🧠 **Feature Importance** | Shows contribution of each feature in model decisions |
+| 🔥 **Correlation Heatmap** | Visualizes inter-feature relationships |
+| 🌄 **Susceptibility Map** | Color-coded map showing landslide risk zones |
+| 📉 **Performance Metrics** | Confusion Matrix, F1-score, ROC Curve |
+
+---
+
+## 🧪 LANDSLIDE PREDICTION (LOCALHOST DEPLOYMENT)  
+
+### 🔍 Model Deployment using Pickle  
+Below are snapshots of the **Flask-based local deployment** that loads the trained model (`.pkl`) and predicts landslide probability.
+
+<p align="center">
+  <img width="800" src="https://github.com/user-attachments/assets/0dd4bab1-8fbc-40e3-be32-68d19d99c862" alt="Prediction UI Screenshot"/>
+</p>
+
+<p align="center">
+  <img width="800" src="https://github.com/user-attachments/assets/2d32a884-4f4b-4cc7-9282-d51bfc52085f" alt="Prediction Result Screenshot"/>
+</p>
+
+---
+
+## 🚀 Getting Started  
+
+Follow these steps to set up the project locally or in Google Colab.  
+
+### 🧰 Prerequisites
+- 🐍 Python 3.7+  
+- ☁️ Google Colab (recommended) or local Python environment  
+- 🧩 Required Python libraries (see `requirements.txt`)  
+- 🗺️ DEM `.tif` files for the study region  
+- 🌧️ Rainfall data CSV (`PERSIANN_20200311_20250730.csv`)  
+
+---
+
+### 💻 Installation  
+
+Clone the repository:
+```bash
+git clone https://github.com/abhijit826/landslide_susceptibility-using-ML-and-QGIS-LULC-Mapping.git
+cd landslide_susceptibility-using-ML-and-QGIS-LULC-Mapping
+pip install -r requirements.txt
