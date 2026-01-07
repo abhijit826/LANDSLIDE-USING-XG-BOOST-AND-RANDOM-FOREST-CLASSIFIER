@@ -1,0 +1,10 @@
+scikit-learn==1.6.1
+pandas==2.2.2
+numpy==1.26.4
+Flask==3.0.3
+Flask-Cors==4.0.1
+ Pillow
+# For a real image model, you would also need a deep learning framework:
+# tensorflow
+# or
+# torch
