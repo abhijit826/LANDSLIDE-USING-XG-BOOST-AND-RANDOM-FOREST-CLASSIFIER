@@ -77,15 +77,18 @@ def predict():
         input_df = input_df.apply(pd.to_numeric, errors='raise')
 
         # --- Prediction ---
-        prediction_result = loaded_model.predict(input_df)[0]
-        prediction_proba = loaded_model.predict_proba(input_df)[0][1]
-
-        response = {
-            'prediction': int(prediction_result),
-            'probability': round(float(prediction_proba), 4)
-        }
-
-        return jsonify(response)
+        raw_prediction = loaded_model.predict(input_df)
+        raw_prediction = np.array(raw_prediction)
+        if raw_prediction.ndim == 1:
+            probability = float(raw_prediction[0])
+        else:
+            probability = float(raw_prediction[0][1])
+            
+        prediction_result = int(probability >= 0.5)
+        return jsonify({
+            "prediction": prediction_result,
+            "probability": round(probability, 4)
+        })
 
     except (ValueError, TypeError) as e:
         # Catches errors from pd.to_numeric if data is not numeric
@@ -153,5 +156,6 @@ if __name__ == '__main__':
 
 
     
+
 
 
