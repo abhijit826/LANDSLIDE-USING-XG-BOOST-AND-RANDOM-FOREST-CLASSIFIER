@@ -147,10 +147,11 @@ def predict_image():
     return jsonify({'error': 'An unknown error occurred'}), 500
 
 # --- Step 3: Run the Flask Server ---
-
 if __name__ == '__main__':
-      port = int(os.environ.get("PORT", 5000))
-    # Note: debug=True is for development only.
-    # In a production environment, use a proper WSGI server like Gunicorn or uWSGI.
-    app.run( host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+
+
+    
+
 
