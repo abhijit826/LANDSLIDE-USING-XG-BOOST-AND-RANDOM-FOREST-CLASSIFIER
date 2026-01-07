@@ -12,6 +12,7 @@ import sys
 from PIL import Image
 import io
 import numpy as np
+import os
 
 # --- Step 1: Initialize Flask App and Load the Model ---
 app = Flask(__name__)
@@ -148,6 +149,8 @@ def predict_image():
 # --- Step 3: Run the Flask Server ---
 
 if __name__ == '__main__':
+      port = int(os.environ.get("PORT", 5000))
     # Note: debug=True is for development only.
     # In a production environment, use a proper WSGI server like Gunicorn or uWSGI.
-    app.run( host='0.0.0.0', port=50000)
+    app.run( host='0.0.0.0', port=port)
+
