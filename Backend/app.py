@@ -35,6 +35,11 @@ model_columns = None
 try:
     with open(model_file_path, 'rb') as f:
         loaded_model = pickle.load(f)
+
+    if hasattr(loaded_model, "__class__") and loaded_model.__class__.__name__ == "XGBClassifier":
+         if not hasattr(loaded_model, "use_label_encoder"):
+              loaded_model.use_label_encoder = False
+             
     app.logger.info(f"Model successfully loaded from {model_file_path}.")
     # The columns used for training are crucial for the API
     model_columns = ['Slope_Angle', 'Rainfall_mm', 'Soil_Saturation', 'Vegetation_Cover',
@@ -156,6 +161,7 @@ if __name__ == '__main__':
 
 
     
+
 
 
 
