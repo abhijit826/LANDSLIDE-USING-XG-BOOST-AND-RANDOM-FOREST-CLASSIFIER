@@ -14,9 +14,20 @@ import io
 import numpy as np
 import os
 
+
 # --- Step 1: Initialize Flask App and Load the Model ---
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    resources={r"/*": {"origins": "https://landslide-xg-boost.vercel.app"}},
+    supports_credentials=True
+    )
+@app.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = 'https://landslide-xg-boost.vercel.app'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    return response
 
 # --- (Optional) Load an Image Analysis Model ---
 # This is a placeholder for loading a real image classification model.
