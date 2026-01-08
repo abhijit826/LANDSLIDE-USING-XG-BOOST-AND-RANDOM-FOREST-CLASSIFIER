@@ -36,10 +36,17 @@ try:
     with open(model_file_path, 'rb') as f:
         loaded_model = pickle.load(f)
 
-    if hasattr(loaded_model, "__class__") and loaded_model.__class__.__name__ == "XGBClassifier":
-         if not hasattr(loaded_model, "use_label_encoder"):
-              loaded_model.use_label_encoder = False
-             
+    legacy_attrs = {
+        "use_label_encoder": False,
+        "gpu_id": -1,
+        "predictor": "cpu_predictor",
+        "tree_method": "auto"
+    }
+
+    for attr, value in legacy_attrs.items():
+        if not hasattr(loaded_model, attr):
+            setattr(loaded_model, attr, value)
+
     app.logger.info(f"Model successfully loaded from {model_file_path}.")
     # The columns used for training are crucial for the API
     model_columns = ['Slope_Angle', 'Rainfall_mm', 'Soil_Saturation', 'Vegetation_Cover',
@@ -82,7 +89,12 @@ def predict():
         input_df = input_df.apply(pd.to_numeric, errors='raise')
 
         # --- Prediction ---
-        raw_prediction = loaded_model.predict(input_df)
+        #raw_prediction = loaded_model.predict(input_df)
+        raw_prediction = loaded_model.predict(
+            input_df,
+             validate_features=False
+        )
+
         raw_prediction = np.array(raw_prediction)
         if raw_prediction.ndim == 1:
             probability = float(raw_prediction[0])
@@ -161,7 +173,6 @@ if __name__ == '__main__':
 
 
     
-
 
 
 
