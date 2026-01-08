@@ -13,7 +13,7 @@ from PIL import Image
 import io
 import numpy as np
 import os
-
+import xgboost as xgb
 
 # --- Step 1: Initialize Flask App and Load the Model ---
 app = Flask(__name__)
@@ -101,10 +101,9 @@ def predict():
 
         # --- Prediction ---
         #raw_prediction = loaded_model.predict(input_df)
-        raw_prediction = loaded_model.predict(
-            input_df,
-             validate_features=False
-        )
+        booster = loaded_model.get_booster()
+        dmatrix = xgb.DMatrix(input_df)
+        raw_prediction = booster.predict(dmatrix)
 
         raw_prediction = np.array(raw_prediction)
         if raw_prediction.ndim == 1:
